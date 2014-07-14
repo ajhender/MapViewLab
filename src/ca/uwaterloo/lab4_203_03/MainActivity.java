@@ -34,7 +34,7 @@ public class MainActivity extends Activity {
 	//Initializing class wide variables
 	static Button clearBtn;
 	static MapView mapView;
-	static GPSCoordinator path;
+	//static GPSCoordinator path;
 	static PositionListener listener;
 	//static Compass compassView;
 
@@ -109,6 +109,8 @@ public class MainActivity extends Activity {
 			lmain.setOrientation(LinearLayout.VERTICAL);
 			
 			mapView.addListener(this);
+			
+			
 
 			//Initializing button to clear step count
 			clearBtn = new Button(rootView.getContext());	
@@ -145,10 +147,7 @@ public class MainActivity extends Activity {
 
 			//Creating a textview to display the data from the Orientation class 
 			TextView tvA = new TextView(rootView.getContext());
-			lmain.addView(tvA);
-			
-			TextView tvC = new TextView(rootView.getContext());
-			lmain.addView(tvC);			
+			lmain.addView(tvA);		
 
 			//Adding button to the mainlayout
 			lmain.addView(clearBtn);
@@ -169,7 +168,7 @@ public class MainActivity extends Activity {
 			sensorManager.registerListener(orientationField, magFieldSensor, SensorManager.SENSOR_DELAY_FASTEST);
 			sensorManager.registerListener(orientationField, accelSensor, SensorManager.SENSOR_DELAY_FASTEST);
 
-			GPSCoordinator test = new GPSCoordinator(tvC);
+		
 			//lmain.addView(OrientationEventListener.myCompass);
 	
 			return rootView;
@@ -312,12 +311,12 @@ public class MainActivity extends Activity {
 		
 		public static class GPSCoordinator {
 
-			TextView output;
+			
 			private int state = 0;
-			private float minX;
-			private InterceptPoint[][] wallCoordArray;
-			private float firstWall;
-			NavigationalMap wallfinder;
+			private InterceptPoint[] wallCoordArray;
+			private PointF firstWall;
+			private NavigationalMap wallfinder;
+			
 			
 			static PointF pA = new PointF((float) 3.5, (float) 9.25);
 			static PointF pB = new PointF((float) 7.15, (float) 9.15);
@@ -329,9 +328,6 @@ public class MainActivity extends Activity {
 			PointF dC = new PointF((float) 12.7, (float) 9.25);
 			PointF dD = new PointF((float) 14.6, (float) 9.35);
 
-			public GPSCoordinator(TextView outputView) {
-				output = outputView;
-			}
 
 			public static List<PointF> calculatePathOne() {
 
@@ -401,12 +397,18 @@ public class MainActivity extends Activity {
 			public void showDirection() {
 				
 				 List<InterceptPoint> walls = wallfinder.calculateIntersections(mapView.getOriginPoint(),mapView.getDestinationPoint());
-				 wallCoordArray = (InterceptPoint[][]) walls.toArray();
-				 //firstWall = (float) wallCoordArray[0].x;
+				 wallCoordArray = (InterceptPoint[]) walls.toArray();
+				 firstWall = (PointF) wallCoordArray[0].getPoint();
+				
 				 
-				// output.setText(String.format("Test = %f", wallCoordArray[0]));
-				 /*
-				 if(walls[0] < dA){//Walls[0] will be the first wall intersection's x values
+				 if( firstWall.x < dA.x){
+					 mapView.setUserPath(calculatePathOne());
+				 }
+				 else if(){
+					 
+				 }
+				/* 
+				 if(firstWall.x < dA.x){//Walls[0] will be the first wall intersection's x values
 					 
 					 mapView.setUserPath(pathOne);
 					 
@@ -566,7 +568,12 @@ public class MainActivity extends Activity {
 		@Override
 		public void destinationChanged(MapView source, PointF dest) {
 			
-			mapView.setUserPath(GPSCoordinator.calculatePathOne());
+			
+			
+			
+			
+			//mapView.setUserPath(GPSCoordinator.calculatePathOne());
+			
 			
 		}
 	
