@@ -395,27 +395,26 @@ public class MainActivity extends Activity {
 			}
 			
 			public void showDirection() {
-				/*
-				 List<InterceptPoint> walls = wallfinder.calculateIntersections(mapView.getOriginPoint(),mapView.getDestinationPoint());
-				 wallCoordArray = (InterceptPoint[]) walls.toArray();
-				 firstWall = (PointF) wallCoordArray[0].getPoint();
 				
-				 
-				 if( firstWall.x < dA.x){
+				
+				if( mapView.getOriginPoint().x < dA.x){
 					 mapView.setUserPath(calculatePathOne());
 				 }
-				 else if(firstWall.x < dB.x && firstWall.x > dA.x){
+				 else if(mapView.getOriginPoint().x < dB.x && mapView.getOriginPoint().x > dA.x){
 					 mapView.setUserPath(calculatePathTwo());
 				 }
-				 else if(firstWall.x < dC.x && firstWall.x > dB.x){
+				 else if(mapView.getOriginPoint().x < dC.x && mapView.getOriginPoint().x > dB.x){
 					 mapView.setUserPath(calculatePathThree());
 				 }
-				 else if(firstWall.x < dD.x && firstWall.x > dC.x){
+				 else if(mapView.getOriginPoint().x < dD.x && mapView.getOriginPoint().x > dC.x){
 					 mapView.setUserPath(calculatePathFour());
 				 }
 				 else {
 					 mapView.setUserPath(calculatePathFive());
 				 }
+				
+				/*
+				 
 				 
 				 if(firstWall.x < dA.x){//Walls[0] will be the first wall intersection's x values
 					 
@@ -572,46 +571,18 @@ public class MainActivity extends Activity {
 		public void originChanged(MapView source, PointF loc) {
 			source.setUserPoint(loc);
 			
+			if(!(mapView.getDestinationPoint() == null)){
+			GPSCoordinator display = new GPSCoordinator();
+			display.showDirection();
+			}
+			
 		}
 
 		@Override
 		public void destinationChanged(MapView source, PointF dest) {
 			
-			//GPSCoordinator display = new GPSCoordinator();
-			//display.showDirection();
-			GPSCoordinator connect = new GPSCoordinator();
-			
-			Object[] wallCoordArray;
-			PointF firstWall;
-			NavigationalMap wallfinder = new NavigationalMap();
-			
-			List<InterceptPoint> walls = wallfinder.calculateIntersections(mapView.getOriginPoint(),mapView.getDestinationPoint());
-			wallCoordArray = new Object [walls.size()];
-			// wallCoordArray =   walls.toArray();
-			 for(int i = 0; i < (walls.size()-1);i++ ){
-				 
-				 wallCoordArray[i] = walls.get(i);
-				 
-			 }
-			 firstWall = (PointF)  ((InterceptPoint) wallCoordArray[0]).getPoint();
-			
-			 
-			 if( firstWall.x < connect.dA.x){
-				 mapView.setUserPath(connect.calculatePathOne());
-			 }
-			 else if(firstWall.x < connect.dB.x && firstWall.x > connect.dA.x){
-				 mapView.setUserPath(connect.calculatePathTwo());
-			 }
-			 else if(firstWall.x < connect.dC.x && firstWall.x > connect.dB.x){
-				 mapView.setUserPath(connect.calculatePathThree());
-			 }
-			 else if(firstWall.x < connect.dD.x && firstWall.x > connect.dC.x){
-				 mapView.setUserPath(connect.calculatePathFour());
-			 }
-			 else {
-				 mapView.setUserPath(connect.calculatePathFive());
-			 }
-			
+			GPSCoordinator display = new GPSCoordinator();
+			display.showDirection();
 			
 			
 			
