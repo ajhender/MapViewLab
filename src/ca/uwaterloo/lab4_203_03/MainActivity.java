@@ -319,8 +319,9 @@ public class MainActivity extends Activity {
 
 			private static TextView output;
 			private static int state = 0;
-			private static float distance;
-			private static float angle;
+			static float distance;
+			static float angle;
+			static float rads;
 			
 			static PointF pA = new PointF((float) 3.5, (float) 9.25);
 			static PointF pB = new PointF((float) 7.15, (float) 9.15);
@@ -570,227 +571,87 @@ public class MainActivity extends Activity {
 				
 				if( mapView.getOriginPoint().x < dA.x && mapView.getDestinationPoint().x > dD.x){
 					 mapView.setUserPath(calculatePathOne());
-					 calcDirection(pA, pB, pC, pD); 
+					 calcDirectionFour(pA, pB, pC, pD); 
 				 }
 				 else if(mapView.getOriginPoint().x < dB.x && mapView.getOriginPoint().x > dA.x && mapView.getDestinationPoint().x > dD.x){
 					 mapView.setUserPath(calculatePathTwo());
+					 calcDirectionThree(pB, pC, pD);
 				 }
 				 else if(mapView.getOriginPoint().x < dC.x && mapView.getOriginPoint().x > dB.x && mapView.getDestinationPoint().x > dD.x){
 					 mapView.setUserPath(calculatePathThree());
+					 calcDirectionTwo(pC, pD);
 				 }
 				 else if(mapView.getOriginPoint().x < dD.x && mapView.getOriginPoint().x > dC.x && mapView.getDestinationPoint().x > dD.x){
 					 mapView.setUserPath(calculatePathFour());
+					 calcDirectionOne(pD);					 
 				 }
 				 else if((mapView.getOriginPoint().x > dD.x && mapView.getDestinationPoint().x > dD.x) 
 						 || (mapView.getOriginPoint().x < dA.x && mapView.getDestinationPoint().x < dA.x)){
 					 mapView.setUserPath(calculatePathFive());
+					 calcDirectionZero();
 				 }
 				 else if( mapView.getOriginPoint().x < dA.x && mapView.getDestinationPoint().x < dC.x && mapView.getDestinationPoint().x > dB.x){
-					 mapView.setUserPath(calculatePathSix());					 
+					 mapView.setUserPath(calculatePathSix());
+					 calcDirectionThree(pA, pB, pC);
 				 }
 				 else if( mapView.getOriginPoint().x < dA.x && mapView.getDestinationPoint().x < dB.x && mapView.getDestinationPoint().x > dA.x){
-					 mapView.setUserPath(calculatePathSeven());					 
+					 mapView.setUserPath(calculatePathSeven());	
+					 calcDirectionTwo(pA, pB);
 				 }
 				 else if(mapView.getOriginPoint().x > dA.x && mapView.getOriginPoint().x <dB.x && mapView.getDestinationPoint().x < dC.x && mapView.getDestinationPoint().x > dB.x){
-					 mapView.setUserPath(calculatePathEight());					 
+					 mapView.setUserPath(calculatePathEight());	
+					 calcDirectionTwo(pB, pC);
 				 }
 				 else if(mapView.getDestinationPoint().x > dA.x && mapView.getDestinationPoint().x <dB.x && mapView.getOriginPoint().x < dC.x && mapView.getOriginPoint().x > dB.x){
 					 mapView.setUserPath(calculatePathNine());
+					 calcDirectionTwo(pC, pB);
 				 }
 				 else if( mapView.getDestinationPoint().x < dA.x && mapView.getOriginPoint().x < dB.x && mapView.getOriginPoint().x > dA.x){
-					 mapView.setUserPath(calculatePathTen());					 
+					 mapView.setUserPath(calculatePathTen());	
+					 calcDirectionTwo(pB, pA);
 				 }
 				 else if( mapView.getDestinationPoint().x < dA.x && mapView.getOriginPoint().x < dC.x && mapView.getOriginPoint().x > dB.x){
-					 mapView.setUserPath(calculatePathEleven());					 
+					 mapView.setUserPath(calculatePathEleven());	
+					 calcDirectionThree(pC, pB, pA);
 				 }
 				 else if(mapView.getDestinationPoint().x < dD.x && mapView.getDestinationPoint().x > dC.x && mapView.getOriginPoint().x > dD.x){
 					 mapView.setUserPath(calculatePathTwelve());
+					 calcDirectionOne(pD);	
 				 }
 				 else if(mapView.getDestinationPoint().x < dC.x && mapView.getDestinationPoint().x > dB.x && mapView.getOriginPoint().x > dD.x){
 					 mapView.setUserPath(calculatePathThirteen());
+					 calcDirectionTwo(pD, pC);
 				 }
 				 else if(mapView.getDestinationPoint().x < dB.x && mapView.getDestinationPoint().x > dA.x && mapView.getOriginPoint().x > dD.x){
 					 mapView.setUserPath(calculatePathFourteen());
+					 calcDirectionThree(pD, pC, pB);
 				 }
 				 else if( mapView.getDestinationPoint().x < dA.x && mapView.getOriginPoint().x > dD.x){
 					 mapView.setUserPath(calculatePathFifteen());
+					 calcDirectionFour(pD, pC, pB, pA);
 				 }
 				 else if( mapView.getDestinationPoint().x > dA.x && mapView.getDestinationPoint().x < dB.x && mapView.getOriginPoint().x > dA.x && mapView.getOriginPoint().x < dB.x){
 					 mapView.setUserPath(calculatePathSixteen());
+					 calcDirectionOne(pB);	
 				 }
 				 else if( mapView.getDestinationPoint().x > dB.x && mapView.getDestinationPoint().x < dC.x && mapView.getOriginPoint().x > dB.x && mapView.getOriginPoint().x < dC.x){
 					 mapView.setUserPath(calculatePathSeventeen());
+					 calcDirectionOne(pC);	
 				 }
 				
-					
-				
-				/*
-			
-				 
-				 if(firstWall.x < dA.x){//Walls[0] will be the first wall intersection's x values
-					 
-					 mapView.setUserPath(pathOne);
-					 
-					 if(state == 0){
-						 //Display heading to pA
-						 
-						 if(/*reached general area of pA ){
-							 state = 1;						 
-						 }
-					 }
-					 else if(state == 1){
-						 //Display heading to pB
-						 
-						 if(/*reached general area of pB ){
-							 state = 2;						 
-						 }
-						 
-					 }
-					 else if(state == 2){
-						 //Display heading to pC
-						 
-						 if(/*reached general area of pC ){
-							 state = 3;						 
-						 }
-						 
-					 }
-					 else if(state == 3){
-						 //Display heading to pD
-						 
-						 if(/*reached general area of pD ){
-							 state = 4;						 
-						 }
-						 
-					 }
-					 else if(state ==4){
-						 //Display heading to Destination
-						 
-						 if(/*reached general area of Destination ){
-							 //Display toast for reaching destination						 
-						 }
-						 
-					 }
-					 
-				 }
-				 else if(walls[0] < dB && walls[0] > dA){
-					 
-					 mapView.setUserPath(pathTwo);
-					 
-					 if(state == 0){
-						 //Display heading to pB
-						 
-						 if(/*reached general area of pB ){
-							 state = 1;						 
-						 }
-					 }
-					 else if(state == 1){
-						 //Display heading to pC
-						 
-						 if(/*reached general area of pC ){
-							 state = 2;						 
-						 }
-						 
-					 }
-					 else if(state == 2){
-						 //Display heading to pD
-						 
-						 if(/*reached general area of pD ){
-							 state = 3;						 
-						 }
-						 
-					 }
-					 else if(state == 3){
-						 //Display heading to Destination
-						 
-						 if(/*reached general area of Destination ){
-							 //Display toast for reaching destination						 
-						 }
-						 
-					 }
-					 
-				 }
-				 else if(walls[0] < dC && walls[0] > dB){
-					 
-					 mapView.setUserPath(pathThree);
-					 
-					 if(state == 0){
-						 //Display heading to pC
-						 
-						 if(/*reached general area of pC ){
-							 state = 1;						 
-						 }
-					 }
-					 else if(state == 1){
-						 //Display heading to pD
-						 
-						 if(/*reached general area of pD ){
-							 state = 2;						 
-						 }
-						 
-					 }
-
-					 else if(state == 2){
-						 //Display heading to Destination
-						 
-						 if(/*reached general area of Destination ){
-							 //Display toast for reaching destination						 
-						 }
-						 
-					 }
-				 
-				 }
-				 else if(walls[0] < dD && walls[0] > dC){
-					 
-					 mapView.setUserPath(pathFour);
-					 
-					 if(state == 0){
-						 //Display heading to pD
-						 
-						 if(/*reached general area of pD ){
-							 state = 1;						 
-						 }
-					 }
-
-					 else if(state == 1){
-						 //Display heading to Destination
-						 
-						 if(/*reached general area of Destination ){
-							 //Display toast for reaching destination						 
-						 }
-						 
-					 }
-					 
-				 }
-				 else{//Direct route
-					 
-					 mapView.setUserPath(pathFive);
-					 
-					 //Display heading to Destination
-					 
-					 if(/*reached general area of Destination ){
-						 //Display toast for reaching destination						 
-					 }
-					 
-				 }
-				 
-				pathOne.add(mapView.getUserPoint());
-				pathOne.add(pA);
-				pathOne.add(pB);
-				pathOne.add(pC);
-				pathOne.add(pD);
-				pathOne.add(mapView.getDestinationPoint());
-				 
-				 */
 			}
 
-			private static void calcDirection(PointF pA, PointF pB, PointF pC, PointF pD) {
+			private static void calcDirectionFour(PointF pA, PointF pB, PointF pC, PointF pD) {
 				
 				if(state == 0){
 					
 					distance = VectorUtils.distance(mapView.getUserPoint(), pA);
-					angle = VectorUtils.angleBetween(mapView.getUserPoint(), mapView.getOriginPoint(), pA);
+					rads = VectorUtils.angleBetween(mapView.getUserPoint(), mapView.getOriginPoint(), pA);
 					
-					output.setText(String.format("\n Distance = %f \n Angle = %f", distance, angle));
+					angle = (float)Math.round(rads * 100) / 100;
+					if (angle < 0){
+					angle = (float) (angle + 2 * (Math.PI));
+					}					
 					
 					if(Math.round((float) mapView.getUserPoint().x) == Math.round((float)pA.x) && Math.round((float) mapView.getUserPoint().y) == Math.round((float)pA.y)){
 						state = 1;
@@ -800,9 +661,12 @@ public class MainActivity extends Activity {
 				else if(state == 1){
 					
 					distance = VectorUtils.distance(mapView.getUserPoint(), pB);
-					angle = VectorUtils.angleBetween(mapView.getUserPoint(), pA, pB);
+					rads = VectorUtils.angleBetween(mapView.getUserPoint(), pA, pB);
 					
-					output.setText(String.format("\n Distance = %f \n Angle = %f", distance, angle));
+					angle = (float)Math.round(rads * 100) / 100;
+					if (angle < 0){
+					angle = (float) (angle + 2 * (Math.PI));
+					}					
 					
 					if(Math.round((float) mapView.getUserPoint().x) == Math.round((float)pB.x) && Math.round((float) mapView.getUserPoint().y) == Math.round((float)pB.y)){
 						state = 2;
@@ -812,9 +676,12 @@ public class MainActivity extends Activity {
 				else if(state == 2){
 					
 					distance = VectorUtils.distance(mapView.getUserPoint(), pC);
-					angle = VectorUtils.angleBetween(mapView.getUserPoint(), pB, pC);
+					rads = VectorUtils.angleBetween(mapView.getUserPoint(), pB, pC);
 					
-					output.setText(String.format("\n Distance = %f \n Angle = %f", distance, angle));
+					angle = (float)Math.round(rads * 100) / 100;
+					if (angle < 0){
+					angle = (float) (angle + 2 * (Math.PI));
+					}					
 					
 					if(Math.round((float) mapView.getUserPoint().x) == Math.round((float)pC.x) && Math.round((float) mapView.getUserPoint().y) == Math.round((float)pC.y)){
 						state = 3;
@@ -825,9 +692,12 @@ public class MainActivity extends Activity {
 				else if(state == 3){
 					
 					distance = VectorUtils.distance(mapView.getUserPoint(), pD);
-					angle = VectorUtils.angleBetween(mapView.getUserPoint(), pC, pD);
+					rads = VectorUtils.angleBetween(mapView.getUserPoint(), pC, pD);
 					
-					output.setText(String.format("\n Distance = %f \n Angle = %f", distance, angle));
+					angle = (float)Math.round(rads * 100) / 100;
+					if (angle < 0){
+					angle = (float) (angle + 2 * (Math.PI));
+					}					
 					
 					if(Math.round((float) mapView.getUserPoint().x) == Math.round((float)pD.x) && Math.round((float) mapView.getUserPoint().y) == Math.round((float)pD.y)){
 						state = 4;
@@ -838,13 +708,175 @@ public class MainActivity extends Activity {
 				else if(state == 4){
 					
 					distance = VectorUtils.distance(mapView.getUserPoint(), mapView.getDestinationPoint());
-					angle = VectorUtils.angleBetween(mapView.getUserPoint(), pD, mapView.getDestinationPoint());
+					rads = VectorUtils.angleBetween(mapView.getUserPoint(), pD, mapView.getDestinationPoint());
 					
-					output.setText(String.format("\n Distance = %f \n Angle = %f", distance, angle));
+					angle = (float)Math.round(rads * 100) / 100;
+					if (angle < 0){
+					angle = (float) (angle + 2 * (Math.PI));
+					}			
 					
 					
 				}
 				
+				
+			}
+			
+			private static void calcDirectionThree(PointF pA, PointF pB, PointF pC) {
+				
+				if(state == 0){
+					
+					distance = VectorUtils.distance(mapView.getUserPoint(), pA);
+					rads = VectorUtils.angleBetween(mapView.getUserPoint(), mapView.getOriginPoint(), pA);
+					
+					angle = (float)Math.round(rads * 100) / 100;
+					if (angle < 0){
+					angle = (float) (angle + 2 * (Math.PI));
+					}					
+					
+					if(Math.round((float) mapView.getUserPoint().x) == Math.round((float)pA.x) && Math.round((float) mapView.getUserPoint().y) == Math.round((float)pA.y)){
+						state = 1;
+					}
+					
+				}
+				else if(state == 1){
+					
+					distance = VectorUtils.distance(mapView.getUserPoint(), pB);
+					rads = VectorUtils.angleBetween(mapView.getUserPoint(), pA, pB);
+					
+					angle = (float)Math.round(rads * 100) / 100;
+					if (angle < 0){
+					angle = (float) (angle + 2 * (Math.PI));
+					}					
+					
+					if(Math.round((float) mapView.getUserPoint().x) == Math.round((float)pB.x) && Math.round((float) mapView.getUserPoint().y) == Math.round((float)pB.y)){
+						state = 2;
+					}
+					
+				}
+				else if(state == 2){
+					
+					distance = VectorUtils.distance(mapView.getUserPoint(), pC);
+					rads = VectorUtils.angleBetween(mapView.getUserPoint(), pB, pC);
+					
+					angle = (float)Math.round(rads * 100) / 100;
+					if (angle < 0){
+					angle = (float) (angle + 2 * (Math.PI));
+					}					
+					
+					if(Math.round((float) mapView.getUserPoint().x) == Math.round((float)pC.x) && Math.round((float) mapView.getUserPoint().y) == Math.round((float)pC.y)){
+						state = 3;
+					}
+					
+				}
+				
+				else if(state == 3){
+					
+					distance = VectorUtils.distance(mapView.getUserPoint(), mapView.getDestinationPoint());
+					rads = VectorUtils.angleBetween(mapView.getUserPoint(), pC, mapView.getDestinationPoint());
+					
+					angle = (float)Math.round(rads * 100) / 100;
+					if (angle < 0){
+					angle = (float) (angle + 2 * (Math.PI));
+					}			
+					
+					
+				}
+				
+				
+			}
+			
+			private static void calcDirectionTwo(PointF pA, PointF pB) {
+				
+				if(state == 0){
+					
+					distance = VectorUtils.distance(mapView.getUserPoint(), pA);
+					rads = VectorUtils.angleBetween(mapView.getUserPoint(), mapView.getOriginPoint(), pA);
+					
+					angle = (float)Math.round(rads * 100) / 100;
+					if (angle < 0){
+					angle = (float) (angle + 2 * (Math.PI));
+					}					
+					
+					if(Math.round((float) mapView.getUserPoint().x) == Math.round((float)pA.x) && Math.round((float) mapView.getUserPoint().y) == Math.round((float)pA.y)){
+						state = 1;
+					}
+					
+				}
+				else if(state == 1){
+					
+					distance = VectorUtils.distance(mapView.getUserPoint(), pB);
+					rads = VectorUtils.angleBetween(mapView.getUserPoint(), pA, pB);
+					
+					angle = (float)Math.round(rads * 100) / 100;
+					if (angle < 0){
+					angle = (float) (angle + 2 * (Math.PI));
+					}					
+					
+					if(Math.round((float) mapView.getUserPoint().x) == Math.round((float)pB.x) && Math.round((float) mapView.getUserPoint().y) == Math.round((float)pB.y)){
+						state = 2;
+					}
+					
+				}				
+				else if(state == 2){
+					
+					distance = VectorUtils.distance(mapView.getUserPoint(), mapView.getDestinationPoint());
+					rads = VectorUtils.angleBetween(mapView.getUserPoint(), pB, mapView.getDestinationPoint());
+					
+					angle = (float)Math.round(rads * 100) / 100;
+					if (angle < 0){
+					angle = (float) (angle + 2 * (Math.PI));
+					}			
+					
+					
+				}
+				
+				
+			}
+			
+			private static void calcDirectionOne(PointF pA) {
+				
+				if(state == 0){
+					
+					distance = VectorUtils.distance(mapView.getUserPoint(), pA);
+					rads = VectorUtils.angleBetween(mapView.getUserPoint(), mapView.getOriginPoint(), pA);
+					
+					angle = (float)Math.round(rads * 100) / 100;
+					if (angle < 0){
+					angle = (float) (angle + 2 * (Math.PI));
+					}					
+					
+					if(Math.round((float) mapView.getUserPoint().x) == Math.round((float)pA.x) && Math.round((float) mapView.getUserPoint().y) == Math.round((float)pA.y)){
+						state = 1;
+					}
+					
+				}
+						
+				else if(state == 1){
+					
+					distance = VectorUtils.distance(mapView.getUserPoint(), mapView.getDestinationPoint());
+					rads = VectorUtils.angleBetween(mapView.getUserPoint(), pA, mapView.getDestinationPoint());
+					
+					angle = (float)Math.round(rads * 100) / 100;
+					if (angle < 0){
+					angle = (float) (angle + 2 * (Math.PI));
+					}			
+					
+					
+				}
+				
+				
+			}
+			
+			private static void calcDirectionZero() {
+				
+					
+					distance = VectorUtils.distance(mapView.getUserPoint(), mapView.getDestinationPoint());
+					rads = VectorUtils.angleBetween(mapView.getUserPoint(), mapView.getOriginPoint(), mapView.getDestinationPoint());
+					
+					angle = (float)Math.round(rads * 100) / 100;
+					if (angle < 0){
+					angle = (float) (angle + 2 * (Math.PI));
+					}
 				
 			}
 			
