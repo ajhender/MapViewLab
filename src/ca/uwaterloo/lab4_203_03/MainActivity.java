@@ -4,11 +4,13 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import ca.uwaterloo.lab4_203_03.MainActivity.PlaceholderFragment.GPSCoordinator;
 import mapper.InterceptPoint;
 import mapper.MapLoader;
 import mapper.MapView;
 import mapper.NavigationalMap;
 import mapper.PositionListener;
+import mapper.VectorUtils;
 import android.app.Activity;
 import android.app.Fragment;
 import android.graphics.PointF;
@@ -34,9 +36,7 @@ public class MainActivity extends Activity {
 	//Initializing class wide variables
 	static Button clearBtn;
 	static MapView mapView;
-	//static GPSCoordinator path;
 	static PositionListener listener;
-	//static Compass compassView;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -137,9 +137,6 @@ public class MainActivity extends Activity {
 			mapView.setMap(map);
 			lmain.addView(mapView);
 			
-			//compassView = new Compass(rootView.getContext());
-			//lmain.addView(compassView);
-			
 			//Creating a textview to display a title for the data and adding it to mainlayout 
 			TextView tA = new TextView(rootView.getContext());
 			tA.setText("\nDead Reckoning---------");
@@ -147,7 +144,10 @@ public class MainActivity extends Activity {
 
 			//Creating a textview to display the data from the Orientation class 
 			TextView tvA = new TextView(rootView.getContext());
-			lmain.addView(tvA);		
+			lmain.addView(tvA);	
+			
+			TextView tvC = new TextView(rootView.getContext());
+			lmain.addView(tvC);	
 
 			//Adding button to the mainlayout
 			lmain.addView(clearBtn);
@@ -168,7 +168,7 @@ public class MainActivity extends Activity {
 			sensorManager.registerListener(orientationField, magFieldSensor, SensorManager.SENSOR_DELAY_FASTEST);
 			sensorManager.registerListener(orientationField, accelSensor, SensorManager.SENSOR_DELAY_FASTEST);
 
-		
+			GPSCoordinator directions = new GPSCoordinator(tvC);
 			//lmain.addView(OrientationEventListener.myCompass);
 	
 			return rootView;
@@ -194,11 +194,11 @@ public class MainActivity extends Activity {
 			private static PointF userPath;
 			private float state = 0;
 			private double heading = 0;
+			private GPSCoordinator update;
 			final float stepDistance = 1;
 			static float steps = 0;
 			static float xCoord;
 			static float yCoord;
-			//static Compass myCompass;
 
 			//Constructor of Orientation class
 			public OrientationEventListener(TextView outputView){
@@ -250,6 +250,7 @@ public class MainActivity extends Activity {
 						userPath = new PointF(xCoord, yCoord);
 						//GPSCoordinator setPath = new GPSCoordinator(userPath);
 						//mapView.setUserPath(drawPath);
+						update.showDirection();
 		
 						state = 0;
 
@@ -305,9 +306,6 @@ public class MainActivity extends Activity {
 				heading = heading + 2 * (Math.PI);
 				}
 				
-				
-			//	myCompass.update(orientationVal[0]);
-				
 				//Outputting the final values in the proper format
 				output.setText(String.format("Step Counter------- \n Steps = %f\n  \n Orientation------- \n North/South(y) = %f \n East/West(x) = %f \n Heading = %f \n X= %f \n Y= %f ",
 						+												steps, xCoord, yCoord, heading, mapView.getUserPoint().x, mapView.getUserPoint().y));
@@ -319,9 +317,10 @@ public class MainActivity extends Activity {
 		
 		public static class GPSCoordinator {
 
-			
-			private int state = 0;	
-			private static PointF userPath;
+			private static TextView output;
+			private static int state = 0;
+			private static float distance;
+			private static float angle;
 			
 			static PointF pA = new PointF((float) 3.5, (float) 9.25);
 			static PointF pB = new PointF((float) 7.15, (float) 9.15);
@@ -333,12 +332,12 @@ public class MainActivity extends Activity {
 			static PointF dC = new PointF((float) 12.7, (float) 9.25);
 			static PointF dD = new PointF((float) 14.6, (float) 9.35);
 			
-			public GPSCoordinator(PointF path){
-				userPath = path;
+			public GPSCoordinator(TextView outputView) {
+				output = outputView;
 			}
 
 			public GPSCoordinator() {
-				
+				// TODO Auto-generated constructor stub
 			}
 
 			public static List<PointF> calculatePathOne() {
@@ -346,7 +345,6 @@ public class MainActivity extends Activity {
 				List<PointF> pathOne = new ArrayList<PointF>();
 
 				pathOne.add(mapView.getUserPoint());
-				//pathOne.add(userPath);
 				pathOne.add(pA);
 				pathOne.add(pB);
 				pathOne.add(pC);
@@ -572,6 +570,7 @@ public class MainActivity extends Activity {
 				
 				if( mapView.getOriginPoint().x < dA.x && mapView.getDestinationPoint().x > dD.x){
 					 mapView.setUserPath(calculatePathOne());
+					 calcDirection(pA, pB, pC, pD); 
 				 }
 				 else if(mapView.getOriginPoint().x < dB.x && mapView.getOriginPoint().x > dA.x && mapView.getDestinationPoint().x > dD.x){
 					 mapView.setUserPath(calculatePathTwo());
@@ -622,8 +621,11 @@ public class MainActivity extends Activity {
 				 else if( mapView.getDestinationPoint().x > dB.x && mapView.getDestinationPoint().x < dC.x && mapView.getOriginPoint().x > dB.x && mapView.getOriginPoint().x < dC.x){
 					 mapView.setUserPath(calculatePathSeventeen());
 				 }
+				
+					
+				
 				/*
-				 
+			
 				 
 				 if(firstWall.x < dA.x){//Walls[0] will be the first wall intersection's x values
 					 
@@ -770,7 +772,80 @@ public class MainActivity extends Activity {
 					 }
 					 
 				 }
+				 
+				pathOne.add(mapView.getUserPoint());
+				pathOne.add(pA);
+				pathOne.add(pB);
+				pathOne.add(pC);
+				pathOne.add(pD);
+				pathOne.add(mapView.getDestinationPoint());
+				 
 				 */
+			}
+
+			private static void calcDirection(PointF pA, PointF pB, PointF pC, PointF pD) {
+				
+				if(state == 0){
+					
+					distance = VectorUtils.distance(mapView.getUserPoint(), pA);
+					angle = VectorUtils.angleBetween(mapView.getUserPoint(), mapView.getOriginPoint(), pA);
+					
+					output.setText(String.format("\n Distance = %f \n Angle = %f", distance, angle));
+					
+					if(Math.round((float) mapView.getUserPoint().x) == Math.round((float)pA.x) && Math.round((float) mapView.getUserPoint().y) == Math.round((float)pA.y)){
+						state = 1;
+					}
+					
+				}
+				else if(state == 1){
+					
+					distance = VectorUtils.distance(mapView.getUserPoint(), pB);
+					angle = VectorUtils.angleBetween(mapView.getUserPoint(), pA, pB);
+					
+					output.setText(String.format("\n Distance = %f \n Angle = %f", distance, angle));
+					
+					if(Math.round((float) mapView.getUserPoint().x) == Math.round((float)pB.x) && Math.round((float) mapView.getUserPoint().y) == Math.round((float)pB.y)){
+						state = 2;
+					}
+					
+				}
+				else if(state == 2){
+					
+					distance = VectorUtils.distance(mapView.getUserPoint(), pC);
+					angle = VectorUtils.angleBetween(mapView.getUserPoint(), pB, pC);
+					
+					output.setText(String.format("\n Distance = %f \n Angle = %f", distance, angle));
+					
+					if(Math.round((float) mapView.getUserPoint().x) == Math.round((float)pC.x) && Math.round((float) mapView.getUserPoint().y) == Math.round((float)pC.y)){
+						state = 3;
+					}
+					
+				}
+				
+				else if(state == 3){
+					
+					distance = VectorUtils.distance(mapView.getUserPoint(), pD);
+					angle = VectorUtils.angleBetween(mapView.getUserPoint(), pC, pD);
+					
+					output.setText(String.format("\n Distance = %f \n Angle = %f", distance, angle));
+					
+					if(Math.round((float) mapView.getUserPoint().x) == Math.round((float)pD.x) && Math.round((float) mapView.getUserPoint().y) == Math.round((float)pD.y)){
+						state = 4;
+					}
+					
+				}
+				
+				else if(state == 4){
+					
+					distance = VectorUtils.distance(mapView.getUserPoint(), mapView.getDestinationPoint());
+					angle = VectorUtils.angleBetween(mapView.getUserPoint(), pD, mapView.getDestinationPoint());
+					
+					output.setText(String.format("\n Distance = %f \n Angle = %f", distance, angle));
+					
+					
+				}
+				
+				
 			}
 			
 			
