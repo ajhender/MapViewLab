@@ -189,6 +189,8 @@ public class MainActivity extends Activity {
 			private float smoothedAccelX = 0;
 			private float smoothedAccelY = 0;
 			private float smoothedAccelZ = 0;
+			private float azimuth;
+			private List<PointF> userPath = new ArrayList<PointF>();
 			private float state = 0;
 			private double heading = 0;
 			final float stepDistance = 1;
@@ -240,10 +242,14 @@ public class MainActivity extends Activity {
 					else if(state == 3){
 						steps++;
 						
-						xCoord =  (float) (mapView.getUserPoint().x + 2*Math.cos(orientationVal[0]));
-						yCoord =  (float) (mapView.getUserPoint().y + 2*Math.sin(orientationVal[0]));
+						azimuth = orientationVal[0] + (float) Math.toRadians(21);
+						
+						xCoord =  (float) (mapView.getUserPoint().x + Math.sin(azimuth));
+						yCoord =  (float) (mapView.getUserPoint().y - Math.cos(azimuth));
 						
 						mapView.setUserPoint(xCoord, yCoord);
+						userPath.add(new PointF(xCoord, yCoord));
+						mapView.setUserPath(userPath);
 		
 						state = 0;
 
@@ -323,10 +329,10 @@ public class MainActivity extends Activity {
 			static PointF pC = new PointF((float) 11.4, (float) 9.25);
 			static PointF pD = new PointF((float) 15.8, (float) 9.35);
 
-			PointF dA = new PointF((float) 4.5, (float) 9.25);
-			PointF dB = new PointF((float) 8.5, (float) 9.15);
-			PointF dC = new PointF((float) 12.7, (float) 9.25);
-			PointF dD = new PointF((float) 14.6, (float) 9.35);
+			static PointF dA = new PointF((float) 4.5, (float) 9.25);
+			static PointF dB = new PointF((float) 8.5, (float) 9.15);
+			static PointF dC = new PointF((float) 12.7, (float) 9.25);
+			static PointF dD = new PointF((float) 14.6, (float) 9.35);
 
 
 			public static List<PointF> calculatePathOne() {
@@ -394,25 +400,191 @@ public class MainActivity extends Activity {
 
 			}
 			
+			public List<PointF> calculatePathSix() {
+
+				List<PointF> pathSix = new ArrayList<PointF>();
+
+				pathSix.add(mapView.getOriginPoint());
+				pathSix.add(pA);
+				pathSix.add(pB);
+				pathSix.add(pC);
+				pathSix.add(mapView.getDestinationPoint());
+
+				return pathSix;
+
+			}
+			
+			public List<PointF> calculatePathSeven() {
+
+				List<PointF> pathSeven = new ArrayList<PointF>();
+
+				pathSeven.add(mapView.getOriginPoint());
+				pathSeven.add(pA);
+				pathSeven.add(pB);
+				pathSeven.add(mapView.getDestinationPoint());
+
+				return pathSeven;
+
+			}
+			
+			public List<PointF> calculatePathEight() {
+
+				List<PointF> pathEight = new ArrayList<PointF>();
+
+				pathEight.add(mapView.getOriginPoint());
+				pathEight.add(pB);
+				pathEight.add(pC);
+				pathEight.add(mapView.getDestinationPoint());
+
+				return pathEight;
+
+			}
+			
+			public List<PointF> calculatePathNine() {
+
+				List<PointF> pathNine = new ArrayList<PointF>();
+
+				pathNine.add(mapView.getDestinationPoint());
+				pathNine.add(pB);
+				pathNine.add(pC);
+				pathNine.add(mapView.getOriginPoint());
+
+				return pathNine;
+
+			}
+			
+			public List<PointF> calculatePathTen() {
+
+				List<PointF> pathTen = new ArrayList<PointF>();
+
+				pathTen.add(mapView.getDestinationPoint());
+				pathTen.add(pA);
+				pathTen.add(pB);
+				pathTen.add(mapView.getOriginPoint());
+
+				return pathTen;
+
+			}
+			
+			public List<PointF> calculatePathEleven() {
+
+				List<PointF> pathEleven = new ArrayList<PointF>();
+
+				pathEleven.add(mapView.getDestinationPoint());
+				pathEleven.add(pA);
+				pathEleven.add(pB);
+				pathEleven.add(pC);
+				pathEleven.add(mapView.getOriginPoint());
+
+				return pathEleven;
+
+			}
+			
+			public List<PointF> calculatePathTwelve() {
+
+				List<PointF> pathTwelve = new ArrayList<PointF>();
+
+				pathTwelve.add(mapView.getDestinationPoint());
+				pathTwelve.add(pD);
+				pathTwelve.add(mapView.getOriginPoint());
+
+				return pathTwelve;
+
+			}
+			
+			public List<PointF> calculatePathThirteen() {
+
+				List<PointF> pathThirteen = new ArrayList<PointF>();
+
+				pathThirteen.add(mapView.getDestinationPoint());
+				pathThirteen.add(pC);
+				pathThirteen.add(pD);
+				pathThirteen.add(mapView.getOriginPoint());
+
+				return pathThirteen;
+
+			}
+			
+			public List<PointF> calculatePathFourteen() {
+
+				List<PointF> pathFourteen = new ArrayList<PointF>();
+
+				pathFourteen.add(mapView.getDestinationPoint());
+				pathFourteen.add(pB);
+				pathFourteen.add(pC);
+				pathFourteen.add(pD);
+				pathFourteen.add(mapView.getOriginPoint());
+
+				return pathFourteen;
+
+			}
+			
+			public static List<PointF> calculatePathFifteen() {
+
+				List<PointF> pathFifteen = new ArrayList<PointF>();
+
+				pathFifteen.add(mapView.getDestinationPoint());
+				pathFifteen.add(pA);
+				pathFifteen.add(pB);
+				pathFifteen.add(pC);
+				pathFifteen.add(pD);
+				pathFifteen.add(mapView.getOriginPoint());
+
+				return pathFifteen;
+
+			}
+
+			
 			public void showDirection() {
 				
 				
-				if( mapView.getOriginPoint().x < dA.x){
+				if( mapView.getOriginPoint().x < dA.x && mapView.getDestinationPoint().x > dD.x){
 					 mapView.setUserPath(calculatePathOne());
 				 }
-				 else if(mapView.getOriginPoint().x < dB.x && mapView.getOriginPoint().x > dA.x){
+				 else if(mapView.getOriginPoint().x < dB.x && mapView.getOriginPoint().x > dA.x && mapView.getDestinationPoint().x > dD.x){
 					 mapView.setUserPath(calculatePathTwo());
 				 }
-				 else if(mapView.getOriginPoint().x < dC.x && mapView.getOriginPoint().x > dB.x){
+				 else if(mapView.getOriginPoint().x < dC.x && mapView.getOriginPoint().x > dB.x && mapView.getDestinationPoint().x > dD.x){
 					 mapView.setUserPath(calculatePathThree());
 				 }
-				 else if(mapView.getOriginPoint().x < dD.x && mapView.getOriginPoint().x > dC.x){
+				 else if(mapView.getOriginPoint().x < dD.x && mapView.getOriginPoint().x > dC.x && mapView.getDestinationPoint().x > dD.x){
 					 mapView.setUserPath(calculatePathFour());
 				 }
-				 else {
+				 else if((mapView.getOriginPoint().x > dD.x && mapView.getDestinationPoint().x > dD.x) 
+						 || (mapView.getOriginPoint().x < dA.x && mapView.getDestinationPoint().x < dA.x)
+						 || (mapView.getOriginPoint().x > dD.x && mapView.getDestinationPoint().x > dD.x)){
 					 mapView.setUserPath(calculatePathFive());
 				 }
-				
+				 else if( mapView.getOriginPoint().x < dA.x && mapView.getDestinationPoint().x < dC.x && mapView.getDestinationPoint().x > dB.x){
+					 mapView.setUserPath(calculatePathSix());					 
+				 }
+				 else if( mapView.getOriginPoint().x < dA.x && mapView.getDestinationPoint().x < dB.x && mapView.getDestinationPoint().x > dA.x){
+					 mapView.setUserPath(calculatePathSeven());					 
+				 }
+				 else if(mapView.getOriginPoint().x > dA.x && mapView.getOriginPoint().x <dB.x && mapView.getDestinationPoint().x < dC.x && mapView.getDestinationPoint().x > dB.x){
+					 mapView.setUserPath(calculatePathEight());					 
+				 }
+				 else if(mapView.getDestinationPoint().x > dA.x && mapView.getDestinationPoint().x <dB.x && mapView.getOriginPoint().x < dC.x && mapView.getOriginPoint().x > dB.x){
+					 mapView.setUserPath(calculatePathNine());
+				 }
+				 else if( mapView.getDestinationPoint().x < dA.x && mapView.getOriginPoint().x < dB.x && mapView.getOriginPoint().x > dA.x){
+					 mapView.setUserPath(calculatePathTen());					 
+				 }
+				 else if( mapView.getDestinationPoint().x < dA.x && mapView.getOriginPoint().x < dC.x && mapView.getOriginPoint().x > dB.x){
+					 mapView.setUserPath(calculatePathEleven());					 
+				 }
+				 else if(mapView.getDestinationPoint().x < dD.x && mapView.getDestinationPoint().x > dC.x && mapView.getOriginPoint().x > dD.x){
+					 mapView.setUserPath(calculatePathTwelve());
+				 }
+				 else if(mapView.getDestinationPoint().x < dC.x && mapView.getDestinationPoint().x > dB.x && mapView.getOriginPoint().x > dD.x){
+					 mapView.setUserPath(calculatePathThirteen());
+				 }
+				 else if(mapView.getDestinationPoint().x < dB.x && mapView.getDestinationPoint().x > dA.x && mapView.getOriginPoint().x > dD.x){
+					 mapView.setUserPath(calculatePathFourteen());
+				 }
+				 else if( mapView.getDestinationPoint().x < dA.x && mapView.getOriginPoint().x > dD.x){
+					 mapView.setUserPath(calculatePathFifteen());
+				 }
 				/*
 				 
 				 
