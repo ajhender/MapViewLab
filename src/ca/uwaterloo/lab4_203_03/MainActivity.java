@@ -190,7 +190,8 @@ public class MainActivity extends Activity {
 			private float smoothedAccelY = 0;
 			private float smoothedAccelZ = 0;
 			private float azimuth;
-			private List<PointF> userPath = new ArrayList<PointF>();
+			private List<PointF> drawPath;
+			private static PointF userPath;
 			private float state = 0;
 			private double heading = 0;
 			final float stepDistance = 1;
@@ -242,14 +243,13 @@ public class MainActivity extends Activity {
 					else if(state == 3){
 						steps++;
 						
-						azimuth = orientationVal[0] + (float) Math.toRadians(21);
-						
 						xCoord =  (float) (mapView.getUserPoint().x + Math.sin(azimuth));
 						yCoord =  (float) (mapView.getUserPoint().y - Math.cos(azimuth));
 						
 						mapView.setUserPoint(xCoord, yCoord);
-						userPath.add(new PointF(xCoord, yCoord));
-						mapView.setUserPath(userPath);
+						userPath = new PointF(xCoord, yCoord);
+						//GPSCoordinator setPath = new GPSCoordinator(userPath);
+						//mapView.setUserPath(drawPath);
 		
 						state = 0;
 
@@ -297,8 +297,10 @@ public class MainActivity extends Activity {
 			
 				}
 				
+				azimuth = orientationVal[0] + (float) Math.toRadians(21);
+				
 				//Converting the orientation values into user friendly values between 0 & 2Pi
-				heading = (double)Math.round(orientationVal[0] * 100) / 100;
+				heading = (double)Math.round(azimuth * 100) / 100;
 				if (heading < 0){
 				heading = heading + 2 * (Math.PI);
 				}
@@ -318,11 +320,8 @@ public class MainActivity extends Activity {
 		public static class GPSCoordinator {
 
 			
-			private int state = 0;
-			//private InterceptPoint[] wallCoordArray;
-			//private PointF firstWall;
-			//private NavigationalMap wallfinder;
-			
+			private int state = 0;	
+			private static PointF userPath;
 			
 			static PointF pA = new PointF((float) 3.5, (float) 9.25);
 			static PointF pB = new PointF((float) 7.15, (float) 9.15);
@@ -333,13 +332,21 @@ public class MainActivity extends Activity {
 			static PointF dB = new PointF((float) 8.5, (float) 9.15);
 			static PointF dC = new PointF((float) 12.7, (float) 9.25);
 			static PointF dD = new PointF((float) 14.6, (float) 9.35);
+			
+			public GPSCoordinator(PointF path){
+				userPath = path;
+			}
 
+			public GPSCoordinator() {
+				
+			}
 
 			public static List<PointF> calculatePathOne() {
 
 				List<PointF> pathOne = new ArrayList<PointF>();
 
-				pathOne.add(mapView.getOriginPoint());
+				pathOne.add(mapView.getUserPoint());
+				//pathOne.add(userPath);
 				pathOne.add(pA);
 				pathOne.add(pB);
 				pathOne.add(pC);
@@ -533,6 +540,31 @@ public class MainActivity extends Activity {
 				return pathFifteen;
 
 			}
+			
+			public List<PointF> calculatePathSixteen() {
+
+				List<PointF> pathSixteen = new ArrayList<PointF>();
+
+				pathSixteen.add(mapView.getOriginPoint());
+				pathSixteen.add(pB);
+				pathSixteen.add(mapView.getDestinationPoint());
+
+				return pathSixteen;
+
+			}
+			
+			public List<PointF> calculatePathSeventeen() {
+
+				List<PointF> pathSeventeen = new ArrayList<PointF>();
+
+				pathSeventeen.add(mapView.getOriginPoint());
+				pathSeventeen.add(pC);
+				pathSeventeen.add(mapView.getDestinationPoint());
+
+				return pathSeventeen;
+
+			}
+
 
 			
 			public void showDirection() {
@@ -551,8 +583,7 @@ public class MainActivity extends Activity {
 					 mapView.setUserPath(calculatePathFour());
 				 }
 				 else if((mapView.getOriginPoint().x > dD.x && mapView.getDestinationPoint().x > dD.x) 
-						 || (mapView.getOriginPoint().x < dA.x && mapView.getDestinationPoint().x < dA.x)
-						 || (mapView.getOriginPoint().x > dD.x && mapView.getDestinationPoint().x > dD.x)){
+						 || (mapView.getOriginPoint().x < dA.x && mapView.getDestinationPoint().x < dA.x)){
 					 mapView.setUserPath(calculatePathFive());
 				 }
 				 else if( mapView.getOriginPoint().x < dA.x && mapView.getDestinationPoint().x < dC.x && mapView.getDestinationPoint().x > dB.x){
@@ -584,6 +615,12 @@ public class MainActivity extends Activity {
 				 }
 				 else if( mapView.getDestinationPoint().x < dA.x && mapView.getOriginPoint().x > dD.x){
 					 mapView.setUserPath(calculatePathFifteen());
+				 }
+				 else if( mapView.getDestinationPoint().x > dA.x && mapView.getDestinationPoint().x < dB.x && mapView.getOriginPoint().x > dA.x && mapView.getOriginPoint().x < dB.x){
+					 mapView.setUserPath(calculatePathSixteen());
+				 }
+				 else if( mapView.getDestinationPoint().x > dB.x && mapView.getDestinationPoint().x < dC.x && mapView.getOriginPoint().x > dB.x && mapView.getOriginPoint().x < dC.x){
+					 mapView.setUserPath(calculatePathSeventeen());
 				 }
 				/*
 				 
